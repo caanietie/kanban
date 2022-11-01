@@ -1,13 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
 import CardForm from "./CardForm";
+import { addCard } from "../data/cardSlice";
 
-export default function NewCard(props) {
-  return (
-    <CardForm buttonLabel="Create Card" handleSubmit={props.addCard} />
-  )
-}
-
-NewCard.propTypes = {
-  addCard: PropTypes.func.isRequired
+export default function NewCard() {
+  return <CardForm buttonLabel="Create Card" handleSubmit={addCard} />;
 }

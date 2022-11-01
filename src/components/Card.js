@@ -1,9 +1,12 @@
-import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { CSSTransitionGroup } from "react-transition-group";
+import { throttle } from "../utils";
 import CheckList from "./CheckList";
-import { useDrag, useDrop } from "react-dnd";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useDrag, useDrop } from "react-dnd";
+import { positionUpdate } from "../data/cardSlice";
+import { CSSTransitionGroup } from "react-transition-group";
 
 function titlePropType(props, propName, componentName) {
 	if (props[propName]) {
@@ -16,13 +19,16 @@ function titlePropType(props, propName, componentName) {
 }
 
 export default function Card(props) {
+	const dispatch = useDispatch();
 	const [isShown, setIsShown] = useState(false);
 	const showDetails = function () {
 		return (
 			<div className="card__details">
 				{props.description}
-				<CheckList cardId={props.id} tasks={props.tasks}
-					taskCallbacks={props.taskCallbacks} />
+				<CheckList cardId={props.id}
+					tasks={props.tasks}
+					dispatch={dispatch}
+				/>
 			</div>
 		)
 	}
@@ -30,20 +36,19 @@ export default function Card(props) {
 	const [{ isDragging }, drag] = useDrag(() => ({
 		type: "card",
 		item: { id: props.id },
-		collect: monitor => ({
-			isDragging: monitor.isDragging()
-		})
+		collect: monitor => ({ isDragging: monitor.isDragging() })
 	}));
-	const { id: overId, handlePositionUpdate } = props;
-	// eslint-disable-next-line
-	const [{ canDrop, isOver }, drop] = useDrop(() => ({
+	const { id: overId } = props;
+	const [/**{ canDrop, isOver }**/, drop] = useDrop(() => ({
 		accept: "card",
-		hover: (item, monitor) => handlePositionUpdate(item.id, overId),
+		hover: (item, /**monitor**/) => {
+			throttle(dispatch(positionUpdate({ draggedId: item.id, overId })), 500)
+		},
 		collect: monitor => ({
 			isOver: monitor.isOver(),
 			canDrop: monitor.canDrop()
 		})
-	}), [overId, handlePositionUpdate]);
+	}), [dispatch, positionUpdate, overId]);
 
 	let cardTitle = "card__title";
 	if (isShown) cardTitle += " card__title--is-open";
@@ -53,8 +58,10 @@ export default function Card(props) {
 			className={"card" + (isDragging ? " card__opacity" : "")}>
 			<div className={cardTitle} onClick={() => setIsShown(!isShown)}>
 				{props.title}
-				<Link to={`/edit/${props.id}`} className="card--edit"
-					onClick={event => event.stopPropagation()}>
+				<Link to={`/edit/${props.id}`}
+					className="card--edit"
+					onClick={event => event.stopPropagation()}
+				>
 					{"\u270E"}
 				</Link>
 			</div>
@@ -62,7 +69,8 @@ export default function Card(props) {
 				transitionEnterTimeout={300}
 				transitionLeaveTimeout={300}
 				transitionAppear={true}
-				transitionAppearTimeout={300}>
+				transitionAppearTimeout={300}
+			>
 				{isShown ? showDetails() : ""}
 			</CSSTransitionGroup>
 		</div >
@@ -74,7 +82,5 @@ Card.propTypes = {
 	title: titlePropType,
 	color: PropTypes.string,
 	description: PropTypes.string,
-	taskCallbacks: PropTypes.object,
-	handlePositionUpdate: PropTypes.func,
 	tasks: PropTypes.arrayOf(PropTypes.object)
 }

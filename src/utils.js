@@ -9,7 +9,7 @@ export const throttle = function (func, wait) {
     }
     argsChanged = JSON.stringify(arguments) !== JSON.stringify(prevArgs);
     prevArgs = { ...arguments };
-    if (argsChanged || wait && (remaining <= 0 || remaining > wait)) {
+    if (argsChanged || (wait && (remaining <= 0 || remaining > wait))) {
       if (wait) previous = now;
       result = func.apply(this, arguments);
     }

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { deleteTask, toggleTask } from "../data/cardSlice";
 
 export default class ListItem extends React.Component {
 	constructor(props) {
@@ -12,11 +13,14 @@ export default class ListItem extends React.Component {
 		const { done, name } = this.props.task;
 		return (
 			<li className="checklist__task">
-				<input type="checkbox" defaultChecked={done}
-					onChange={this.handleToggle} />
+				<input type="checkbox"
+					defaultChecked={done}
+					onChange={this.handleToggle}
+				/>
 				{` ${name} `}
 				<span className="checklist__task--remove"
-					onClick={this.handleDelete} />
+					onClick={this.handleDelete}
+				/>
 			</li>
 		);
 	}
@@ -24,20 +28,19 @@ export default class ListItem extends React.Component {
 	handleToggle() {
 		const taskId = this.props.task.id;
 		const { cardId, taskIndex } = this.props;
-		this.props.onToggleTask(cardId, taskIndex, taskId);
+		this.props.dispatch(toggleTask({ cardId, taskIndex, taskId }));
 	}
 
 	handleDelete() {
 		const taskId = this.props.task.id;
 		const { cardId, taskIndex } = this.props;
-		this.props.onDeleteTask(cardId, taskIndex, taskId);
+		this.props.dispatch(deleteTask({ cardId, taskIndex, taskId }));
 	}
 }
 
 ListItem.propTypes = {
 	task: PropTypes.object,
 	cardId: PropTypes.number,
-	taskIndex: PropTypes.number,
-	onToggleTask: PropTypes.func,
-	onDeleteTask: PropTypes.func
+	dispatch: PropTypes.func,
+	taskIndex: PropTypes.number
 };

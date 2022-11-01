@@ -1,25 +1,26 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { Link, Outlet } from "react-router-dom";
 import List from "./List";
+import { DndProvider } from "react-dnd";
+import { useSelector } from "react-redux";
+import { Link, Outlet } from "react-router-dom";
+import { cardSelector } from "../data/cardSlice";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-export default function KanBan(props) {
-  const { taskCallbacks, cardCallbacks } = props;
+export default function KanBan() {
+  const cards = useSelector(cardSelector);
   return (
     <div>
       <DndProvider backend={HTML5Backend}>
         <div className="KanBanBoard">
           <List id="todo" title="To Do"
-            cardCallbacks={cardCallbacks} taskCallbacks={taskCallbacks}
-            cards={props.cards.filter(card => card.status === "todo")} />
+            cards={cards.filter(card => card.status === "todo")}
+          />
           <List id="in-progress" title="In Progress"
-            cardCallbacks={cardCallbacks} taskCallbacks={taskCallbacks}
-            cards={props.cards.filter(card => card.status === "in-progress")} />
+            cards={cards.filter(card => card.status === "in-progress")}
+          />
           <List id="completed" title="Completed"
-            cardCallbacks={cardCallbacks} taskCallbacks={taskCallbacks}
-            cards={props.cards.filter(card => card.status === "completed")} />
+            cards={cards.filter(card => card.status === "completed")}
+          />
           <Link to="/new" className="plusSign">{"\uFF0B"}</Link>
         </div>
       </DndProvider>
@@ -27,9 +28,3 @@ export default function KanBan(props) {
     </div>
   )
 }
-
-KanBan.propTypes = {
-  taskCallbacks: PropTypes.object.isRequired,
-  cardCallbacks: PropTypes.object.isRequired,
-  cards: PropTypes.arrayOf(PropTypes.object)
-};
