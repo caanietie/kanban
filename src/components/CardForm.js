@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-function handleSubmit(event, cardFunc, navigate, options) {
+function handleSubmit(event, cardFunc, card, navigate) {
   event.preventDefault();
-  cardFunc(options);
+  cardFunc(card);
   navigate("/");
 }
 
@@ -12,15 +12,15 @@ export default function CardForm(props) {
   const navigate = useNavigate();
   const [title, setTitle] = useState(props.title || "");
   const [description, setDescription] = useState(props.description || "");
-  const [status, setStatus] = useState(props.status || "")
+  const [status, setStatus] = useState(props.status || "todo")
   const [color, setColor] = useState(props.color || "#2233FF");
-  const options = {
+  const card = {
     title: title, color: color, status: status, description: description
   };
   return (
     <div>
       <div className="card big">
-        <form onSubmit={event => handleSubmit(event, props.handleSubmit, navigate, options)}>
+        <form onSubmit={event => handleSubmit(event, props.handleSubmit, card, navigate)}>
           <input type="text" placeholder="Title" maxLength={80} value={title}
             onChange={event => setTitle(event.target.value)} required={true} />
           <textarea type="text" rows={4} placeholder="Description" value={description}
@@ -46,6 +46,7 @@ export default function CardForm(props) {
     </div>
   )
 }
+
 CardForm.propTypes = {
   title: PropTypes.string,
   color: PropTypes.string,

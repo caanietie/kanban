@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import ListItem from "./ListItem";
 
 export default class CheckList extends React.Component {
@@ -9,6 +8,7 @@ export default class CheckList extends React.Component {
 		this.state = { task: "" };
 		this.handleEnterKeyPress = this.handleEnterKeyPress.bind(this);
 	}
+
 	render() {
 		const { onToggleTask, onDeleteTask } = this.props.taskCallbacks;
 		let tasks = this.props.tasks.map((task, index) => (
@@ -27,6 +27,7 @@ export default class CheckList extends React.Component {
 			</div>
 		);
 	}
+
 	handleEnterKeyPress(event) {
 		if (event.key.toLowerCase() === "enter") {
 			const cardId = this.props.cardId;

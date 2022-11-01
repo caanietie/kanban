@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useDrop } from "react-dnd";
-
 import Card from "./Card";
 
 export default function List(props) {
@@ -34,8 +33,8 @@ export default function List(props) {
 
 List.propTypes = {
 	id: PropTypes.string.isRequired,
-	cardCallbacks: PropTypes.object,
 	title: PropTypes.string.isRequired,
+	cardCallbacks: PropTypes.object.isRequired,
 	taskCallbacks: PropTypes.object.isRequired,
 	cards: PropTypes.arrayOf(PropTypes.object.isRequired)
 }

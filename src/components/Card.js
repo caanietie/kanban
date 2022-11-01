@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { CSSTransitionGroup } from "react-transition-group";
-
 import CheckList from "./CheckList";
 import { useDrag, useDrop } from "react-dnd";
 import { Link } from "react-router-dom";
@@ -11,13 +10,12 @@ function titlePropType(props, propName, componentName) {
 		let propValue = props[propName];
 		if (typeof propValue !== "string" || propValue.length > 80)
 			return new Error(
-				`${propName} in ${componentName} should be a string of length < 80`
+				`${propName} in ${componentName} should be a string of length < 50`
 			);
 	}
 }
 
 export default function Card(props) {
-
 	const [isShown, setIsShown] = useState(false);
 	const showDetails = function () {
 		return (
@@ -37,6 +35,7 @@ export default function Card(props) {
 		})
 	}));
 	const { id: overId, handlePositionUpdate } = props;
+	// eslint-disable-next-line
 	const [{ canDrop, isOver }, drop] = useDrop(() => ({
 		accept: "card",
 		hover: (item, monitor) => handlePositionUpdate(item.id, overId),
